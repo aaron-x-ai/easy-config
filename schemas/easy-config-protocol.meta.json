@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://easy-config.aaron-x.ai/schemas/easy-config-protocol.meta.json",
+  "title": "Easy Config Skill Protocol",
+  "type": "object",
+  "required": ["type", "properties", "x-easy-config"],
+  "properties": {
+    "title": { "type": "string", "minLength": 1 },
+    "type": { "const": "object" },
+    "properties": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/fieldSchema" }
+    },
+    "required": { "type": "array", "items": { "type": "string" } },
+    "x-easy-config": { "$ref": "#/$defs/easyConfigExt" }
+  },
+  "$defs": {
+    "fieldSchema": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": ["string", "number", "integer", "boolean", "object", "array"]
+        },
+        "title": { "type": "string" },
+        "format": { "enum": ["password", "email", "uri"] },
+        "writeOnly": { "type": "boolean" },
+        "enum": { "type": "array" },
+        "default": {}
+      }
+    },
+    "easyConfigExt": {
+      "type": "object",
+      "required": ["version", "writeTarget", "format"],
+      "properties": {
+        "version": { "const": 1 },
+        "writeTarget": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9_./-]+$"
+        },
+        "format": { "enum": ["yaml", "json", "env"] },
+        "secrets": { "type": "array", "items": { "type": "string" } },
+        "ui": { "type": "object" },
+        "reloadHint": { "type": "string", "maxLength": 500 }
+      }
+    }
+  }
+}
