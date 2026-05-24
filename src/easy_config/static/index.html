@@ -4,20 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Easy Config</title>
-    <style>
-      body {
-        font-family: system-ui, sans-serif;
-        max-width: 40rem;
-        margin: 4rem auto;
-        padding: 0 1rem;
-        color: #1a1a1a;
-      }
-      h1 { font-weight: 600; }
-      p { line-height: 1.6; color: #444; }
-    </style>
+    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    <h1>Easy Config</h1>
-    <p>P0 占位页。完整 Schema 驱动表单将在 P1 提供。</p>
+    <main class="wrap">
+      <header>
+        <h1>Easy Config</h1>
+        <p id="skill-label" class="muted"></p>
+      </header>
+      <div id="alert" class="alert hidden"></div>
+      <form id="config-form" class="hidden"></form>
+      <p id="loading" class="muted">加载配置…</p>
+      <section id="success" class="success hidden">
+        <h2>配置已保存</h2>
+        <p id="reload-hint"></p>
+        <p class="muted">本地服务将在数秒后自动关闭，您可以关闭此页面。</p>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
   </body>
 </html>

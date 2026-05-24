@@ -3,7 +3,18 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-# Prefer 3.11 when available (Hermes-friendly); fall back to python3.
+DEV=0
+for arg in "$@"; do
+  case "$arg" in
+    --dev) DEV=1 ;;
+    -h|--help)
+      echo "Usage: bash scripts/install.sh [--dev]"
+      echo "  --dev  also install pytest, httpx, ruff (for development)"
+      exit 0
+      ;;
+  esac
+done
+
 if command -v python3.11 >/dev/null 2>&1; then
   PYTHON="python3.11"
 else
@@ -21,11 +32,36 @@ fi
 # shellcheck disable=SC1091
 source "$ROOT/.venv/bin/activate"
 
-# macOS 系统代理（如 127.0.0.1:7890）未启动时，需绕过以免 pip 失败
 export HTTP_PROXY= HTTPS_PROXY= http_proxy= https_proxy= ALL_PROXY= all_proxy=
 export NO_PROXY='*' no_proxy='*'
 
 pip install -U pip setuptools wheel
 pip install -r requirements.txt
 pip install --no-build-isolation -e .
-echo "[install] Easy Config installed in $ROOT/.venv (python: $(python -V))"
+if [[ "$DEV" -eq 1 ]]; then
+  pip install -e ".[dev]"
+fi
+
+VPY="$ROOT/.venv/bin/python"
+echo ""
+echo "[install] Done. Python: $($VPY -V)"
+echo "[install] Virtualenv: $ROOT/.venv"
+echo ""
+echo "Next steps (pick one):"
+echo ""
+echo "  A) Activate venv, then run commands:"
+echo "     source .venv/bin/activate"
+echo "     python -m easy_config doctor"
+if [[ "$DEV" -eq 1 ]]; then
+  echo "     bash scripts/pytest.sh -q"
+else
+  echo "     bash scripts/install.sh --dev"
+  echo "     (then) bash scripts/pytest.sh -q"
+fi
+echo ""
+echo "  B) Without activating (always works):"
+echo "     bash scripts/doctor.sh"
+echo "     bash scripts/pytest.sh -q          (needs install.sh --dev once)"
+echo "     export EASY_CONFIG_SKILLS_ROOT=\"\$PWD/tests/fixtures\""
+echo "     bash scripts/serve.sh --skill demo-skill --dry-run"
+echo ""

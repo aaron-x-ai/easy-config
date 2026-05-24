@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Demo Skill",
+  "type": "object",
+  "properties": {
+    "api_key": {
+      "type": "string",
+      "format": "password",
+      "writeOnly": true,
+      "title": "API Key",
+      "minLength": 3
+    },
+    "max_results": {
+      "type": "integer",
+      "title": "Max results",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 10
+    },
+    "enabled": {
+      "type": "boolean",
+      "title": "Enabled",
+      "default": true
+    }
+  },
+  "required": ["api_key"],
+  "additionalProperties": false,
+  "x-easy-config": {
+    "version": 1,
+    "writeTarget": "config/config.yaml",
+    "format": "yaml",
+    "secrets": ["api_key"],
+    "ui": {
+      "api_key": { "widget": "password", "help": "留空则不修改已有密钥" }
+    },
+    "reloadHint": "请回到聊天窗口，发送：重新加载 demo-skill"
+  }
+}
